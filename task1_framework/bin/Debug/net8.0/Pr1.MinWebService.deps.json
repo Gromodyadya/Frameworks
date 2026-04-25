@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Pr1.MinWebService/1.0.0": {
+        "runtime": {
+          "Pr1.MinWebService.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Pr1.MinWebService/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
