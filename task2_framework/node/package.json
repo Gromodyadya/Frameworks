@@ -1,0 +1,10 @@
+﻿{
+  "name": "pr2-modules-and-di-template",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node src/main.js",
+    "test": "node --test"
+  }
+}
