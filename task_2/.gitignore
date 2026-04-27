@@ -1,0 +1,11 @@
+bin/
+obj/
+.vs/
+.dotnet/
+.appdata/
+.nuget/
+.templateengine/
+artifacts/
+src/Task2.Host/modules/
+task.docx
+task.pdf

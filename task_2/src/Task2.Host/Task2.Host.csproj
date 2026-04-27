@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Task2.Contracts\Task2.Contracts.csproj" />
+    <ProjectReference Include="..\Task2.Core\Task2.Core.csproj" />
+  </ItemGroup>
+
+</Project>

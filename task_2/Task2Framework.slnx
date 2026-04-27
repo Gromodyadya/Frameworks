@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/modules-src/">
+    <Project Path="modules-src/Task2.ExportModule/Task2.ExportModule.csproj" />
+    <Project Path="modules-src/Task2.ReportingModule/Task2.ReportingModule.csproj" />
+    <Project Path="modules-src/Task2.ValidationModule/Task2.ValidationModule.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Task2.Contracts/Task2.Contracts.csproj" />
+    <Project Path="src/Task2.Core/Task2.Core.csproj" />
+    <Project Path="src/Task2.Host/Task2.Host.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Task2.Tests/Task2.Tests.csproj" />
+  </Folder>
+</Solution>
