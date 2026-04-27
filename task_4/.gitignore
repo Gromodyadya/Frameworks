@@ -1,0 +1,6 @@
+bin/
+obj/
+.dotnet/
+.appdata/
+.nuget/
+.pdfreader/
