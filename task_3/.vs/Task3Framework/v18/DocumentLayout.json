@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\progects\\Frameworks\\task_3\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4A0EBE3E-0815-4CD5-82B1-85A9D07932A8}|src\\SecureTask.Api\\SecureTask.Api.csproj|c:\\progects\\frameworks\\task_3\\src\\securetask.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{4A0EBE3E-0815-4CD5-82B1-85A9D07932A8}|src\\SecureTask.Api\\SecureTask.Api.csproj|solutionrelative:src\\securetask.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\progects\\Frameworks\\task_3\\src\\SecureTask.Api\\appsettings.json",
+              "RelativeDocumentMoniker": "src\\SecureTask.Api\\appsettings.json",
+              "ToolTip": "C:\\progects\\Frameworks\\task_3\\src\\SecureTask.Api\\appsettings.json",
+              "RelativeToolTip": "src\\SecureTask.Api\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-04-27T22:30:43.944Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
