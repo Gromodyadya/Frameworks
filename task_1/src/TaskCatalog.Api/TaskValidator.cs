@@ -2,6 +2,8 @@ namespace TaskCatalog.Api;
 
 public sealed class TaskValidator
 {
+    // Валидация вынесена отдельно, чтобы endpoint не превращался в набор if-ов.
+    // Здесь собраны правила предметной области для создания учебной задачи.
     public void Validate(CreateStudyTaskRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Title))
@@ -18,6 +20,7 @@ public sealed class TaskValidator
             throw BadRequest("Notes length must be 250 characters or less.");
     }
 
+    // Все ошибки проверки имеют один код, а конкретная причина лежит в сообщении.
     private static AppException BadRequest(string message) =>
         new(StatusCodes.Status400BadRequest, "VALIDATION_ERROR", message);
 }

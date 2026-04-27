@@ -2,6 +2,8 @@ namespace TaskCatalog.Api;
 
 public sealed class TaskStore
 {
+    // Lock нужен, потому что веб-сервер может обрабатывать несколько запросов одновременно.
+    // Так я защищаю список и счетчик id от конфликтов при параллельном создании.
     private readonly Lock _lock = new();
     private readonly List<StudyTask> _items = [];
     private readonly TaskValidator _validator;
@@ -10,6 +12,8 @@ public sealed class TaskStore
     public TaskStore(TaskValidator validator)
     {
         _validator = validator;
+
+        // Стартовые записи нужны, чтобы GET /api/items сразу показывал результат.
         Create(new("Build minimal API", "Frameworks", 3, false, "Seed item"));
         Create(new("Write lab report", "Frameworks", 2, true, "Seed item"));
     }
@@ -18,6 +22,7 @@ public sealed class TaskStore
     {
         lock (_lock)
         {
+            // Фильтры применяются только если соответствующий параметр реально передали.
             var items = _items.AsEnumerable();
             if (!string.IsNullOrWhiteSpace(query.Course))
                 items = items.Where(x => x.Course.Contains(query.Course, StringComparison.OrdinalIgnoreCase));
@@ -34,15 +39,18 @@ public sealed class TaskStore
     public StudyTask Get(int id)
     {
         lock (_lock)
+            // Если задача не найдена, выбрасывается ожидаемая ошибка 404.
             return _items.FirstOrDefault(x => x.Id == id)
                 ?? throw new AppException(StatusCodes.Status404NotFound, "ITEM_NOT_FOUND", $"Item {id} was not found.");
     }
 
     public StudyTask Create(CreateStudyTaskRequest request)
     {
+        // Сначала проверяю данные, и только потом добавляю их в хранилище.
         _validator.Validate(request);
         lock (_lock)
         {
+            // Id выдается на сервере, поэтому клиент не может подменить идентификатор.
             var item = new StudyTask(_nextId++, request.Title!.Trim(), request.Course!.Trim(),
                 request.Difficulty, request.Completed, request.Notes?.Trim(), DateTimeOffset.UtcNow);
             _items.Add(item);
@@ -50,6 +58,8 @@ public sealed class TaskStore
         }
     }
 
+    // Поддерживаю несколько вариантов сортировки. Если параметр неизвестный,
+    // используется порядок по дате создания.
     private static IOrderedEnumerable<StudyTask> Sort(IEnumerable<StudyTask> items, string? sort) => sort?.ToLowerInvariant() switch
     {
         "title" => items.OrderBy(x => x.Title),

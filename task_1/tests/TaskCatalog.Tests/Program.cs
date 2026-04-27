@@ -4,6 +4,8 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using TaskCatalog.Api;
 
+// Это простой тестовый runner без xUnit/NUnit, чтобы не добавлять внешние пакеты.
+// Каждый пункт запускает отдельный важный сценарий из задания.
 var tests = new List<(string Name, Func<Task> Run)>
 {
     ("validation rejects invalid values", TestValidation),
@@ -12,6 +14,8 @@ var tests = new List<(string Name, Func<Task> Run)>
     ("api filters, sorts and writes logs", TestFilterSortAndLogs)
 };
 
+// Тесты поднимают настоящий API-процесс и проверяют его через HTTP,
+// поэтому это ближе к реальной проверке работы веб-службы.
 var app = await ApiProcess.StartAsync();
 try
 {
@@ -28,6 +32,7 @@ finally
 
 static Task TestValidation()
 {
+    // Здесь проверяю чистую логику предметной области без запуска HTTP.
     var validator = new TaskValidator();
     ExpectThrows(() => validator.Validate(new("", "Frameworks", 3)), "empty title");
     ExpectThrows(() => validator.Validate(new("Task", "Frameworks", 0)), "difficulty");
@@ -37,6 +42,7 @@ static Task TestValidation()
 
 static async Task TestCreateAndRead()
 {
+    // Главный успешный сценарий: создали задачу, затем получили ее обратно по id.
     var created = await ApiProcess.Client.PostAsJsonAsync("/api/items", new CreateStudyTaskRequest("Test API", "Frameworks", 4));
     Assert(created.StatusCode == HttpStatusCode.Created, "create status");
     var item = await created.Content.ReadFromJsonAsync<StudyTask>() ?? throw new Exception("empty item");
@@ -46,6 +52,7 @@ static async Task TestCreateAndRead()
 
 static async Task TestNotFound()
 {
+    // Проверяю, что ошибка 404 приходит в едином формате, а не случайным текстом.
     var response = await ApiProcess.Client.GetAsync("/api/items/99999");
     Assert(response.StatusCode == HttpStatusCode.NotFound, "not found status");
     var error = await response.Content.ReadFromJsonAsync<ErrorResponse>() ?? throw new Exception("empty error");
@@ -54,6 +61,7 @@ static async Task TestNotFound()
 
 static async Task TestFilterSortAndLogs()
 {
+    // Этот сценарий проверяет усложнения: фильтрацию, сортировку и журналирование.
     await ApiProcess.Client.PostAsJsonAsync("/api/items", new CreateStudyTaskRequest("Z task", "Math", 5));
     await ApiProcess.Client.PostAsJsonAsync("/api/items", new CreateStudyTaskRequest("A task", "Math", 1, true));
     var items = await ApiProcess.Client.GetFromJsonAsync<List<StudyTask>>("/api/items?course=Math&sort=title");
@@ -86,6 +94,8 @@ sealed class ApiProcess : IDisposable
     {
         var root = FindRoot();
         var apiProject = Path.Combine(root, "src", "TaskCatalog.Api", "TaskCatalog.Api.csproj");
+
+        // Запускаю API как отдельный процесс, чтобы тестировать его как обычный клиент.
         var info = new ProcessStartInfo("dotnet", $"run --project \"{apiProject}\" --urls http://127.0.0.1:5107")
         {
             UseShellExecute = false,
@@ -94,6 +104,8 @@ sealed class ApiProcess : IDisposable
         };
         info.Environment["DOTNET_CLI_HOME"] = Path.Combine(root, ".dotnet");
         var process = Process.Start(info) ?? throw new Exception("API process was not started.");
+
+        // Потоки вывода нужно читать, иначе у процесса может заполниться буфер вывода.
         _ = Task.Run(() => process.StandardOutput.ReadToEndAsync());
         _ = Task.Run(() => process.StandardError.ReadToEndAsync());
         await WaitUntilReady(process);
@@ -102,6 +114,7 @@ sealed class ApiProcess : IDisposable
 
     private static async Task WaitUntilReady(Process process)
     {
+        // Сервер стартует не мгновенно, поэтому жду, пока он начнет отвечать на запросы.
         for (var i = 0; i < 60; i++)
         {
             if (process.HasExited) throw new Exception("API process exited before readiness.");
@@ -113,6 +126,7 @@ sealed class ApiProcess : IDisposable
 
     private static string FindRoot()
     {
+        // При запуске из bin/Debug нужно подняться вверх до корня решения.
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
         while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "TaskFramework.slnx")))
             dir = dir.Parent;
@@ -121,6 +135,7 @@ sealed class ApiProcess : IDisposable
 
     public void Dispose()
     {
+        // После тестов обязательно останавливаю API, чтобы порт 5107 не оставался занятым.
         if (!_process.HasExited) _process.Kill(entireProcessTree: true);
         _process.Dispose();
     }
